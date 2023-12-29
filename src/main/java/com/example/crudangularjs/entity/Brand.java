@@ -1,5 +1,6 @@
 package com.example.crudangularjs.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
@@ -15,6 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 @Entity
 @Table(name = "brand")
+@JsonIgnoreProperties({"listProduct"})
 public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
