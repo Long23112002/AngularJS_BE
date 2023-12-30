@@ -5,6 +5,7 @@ import com.example.crudangularjs.entity.Product;
 import com.example.crudangularjs.repository.BrandRepository;
 import com.example.crudangularjs.repository.ProductRepository;
 import com.example.crudangularjs.request.ProductRequest;
+import com.example.crudangularjs.request.ProductUpdateRequest;
 import com.example.crudangularjs.response.ProductDetailResponse;
 import com.example.crudangularjs.response.ProductListResponse;
 import com.example.crudangularjs.service.ProductService;
@@ -71,8 +72,35 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public List<ProductDetailResponse> sortProduct(String brandName) {
-        return productRepository.findProductByBrandName(brandName);
+    public List<ProductDetailResponse> sortProduct(Long idBrand) {
+        return productRepository.findProductByBrandName(idBrand);
+    }
+
+    @Override
+    public ProductDetailResponse findProductById(Long idProduct) {
+        return productRepository.findProductById(idProduct);
+    }
+
+    @Override
+    public String updateProduct(ProductUpdateRequest productUpdateRequest) {
+        Optional<Product> productOptional = productRepository.findById(productUpdateRequest.getIdProduct());
+        if(!productOptional.isPresent()){
+            return "Product not found";
+        }
+        Product product = productOptional.get();
+        Optional<Brand> brandOptional = brandRepository.findById(productUpdateRequest.getIdBrand());
+        if (!brandOptional.isPresent()) {
+            return "Brand not found";
+        }
+        Brand brand = brandOptional.get();
+        product.setName(productUpdateRequest.getNameProduct());
+        product.setPrice(productUpdateRequest.getPrice());
+        product.setQuantity(productUpdateRequest.getQuantity());
+        List<Brand> listBrand = new ArrayList<>();
+        listBrand.add(brand);
+        product.setListBrand(listBrand);
+        productRepository.save(product);
+        return "Save Successfully";
     }
 
 

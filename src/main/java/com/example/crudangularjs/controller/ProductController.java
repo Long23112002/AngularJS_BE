@@ -1,6 +1,7 @@
 package com.example.crudangularjs.controller;
 
 import com.example.crudangularjs.request.ProductRequest;
+import com.example.crudangularjs.request.ProductUpdateRequest;
 import com.example.crudangularjs.response.ProductDetailResponse;
 import com.example.crudangularjs.response.ProductListResponse;
 import com.example.crudangularjs.service.ProductService;
@@ -29,7 +30,7 @@ public class ProductController {
 
     @GetMapping("/list")
     public ResponseEntity<?> getListProduct(){
-        return ResponseEntity.ok(productService.getListProduct());
+        return ResponseEntity.ok(productService.getAllProduct());
     }
 
     @PostMapping("/add")
@@ -54,19 +55,40 @@ public class ProductController {
 
     @GetMapping("/sortProduct")
     public ResponseEntity<?> sortProduct(@RequestParam(required = false) String sort  ,
-                                         @RequestParam(required = false) String brandName){
+                                         @RequestParam(defaultValue = "0") Long idBrand){
         List<ProductDetailResponse> listProduct;
-        if(brandName != null){
-            listProduct = productService.sortProduct(brandName);
-        }else {
+
+        if (idBrand != 0) {
+            listProduct = productService.sortProduct(idBrand);
+        } else {
             listProduct = productService.getAllProduct();
         }
 
         if(sort != null  && sort.equalsIgnoreCase("desc")){
              listProduct.sort((p1,p2) -> Double.compare(p2.getPriceProduct(), p1.getPriceProduct()));
-        }else {
+        }
+        if(sort != null && sort.equalsIgnoreCase("asc")){
             listProduct.sort(Comparator.comparingDouble(ProductDetailResponse::getPriceProduct));
         }
         return ResponseEntity.ok(listProduct);
+    }
+
+    @GetMapping("/findProductById/{idProduct}")
+    public ResponseEntity<?> findProductById(@PathVariable("idProduct") Long idProduct){
+        ProductDetailResponse product = productService.findProductById(idProduct);
+        if(product == null){
+            return ResponseEntity.badRequest().body("Product not found");
+        }
+        return ResponseEntity.ok(product);
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<?> updateProduct(@RequestBody ProductUpdateRequest productUpdateRequest){
+        String result = productService.updateProduct(productUpdateRequest);
+        if(result != null){
+            return ResponseEntity.ok("Product updated successfully");
+        }else {
+            return ResponseEntity.badRequest().body("Error updating product");
+        }
     }
 }

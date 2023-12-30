@@ -22,7 +22,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_product")
     private Long idProduct;
-    @Column(name = "name")
+    @Column(name = "name" , columnDefinition = "NVARCHAR(255)")
     @NotEmpty (message = "Name is required")
     private String name;
     @Column(name = "price")

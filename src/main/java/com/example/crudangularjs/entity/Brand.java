@@ -23,7 +23,7 @@ public class Brand {
     @Column(name = "id_brand")
     private Long idBrand;
 
-    @Column(name = "name")
+    @Column(name = "name",columnDefinition = "NVARCHAR(255)")
     @NotEmpty (message = "Name is required")
     private String name;
 

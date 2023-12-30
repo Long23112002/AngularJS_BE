@@ -20,8 +20,13 @@ public interface ProductRepository extends JpaRepository<Product , Long> {
 
     @Query("SELECT NEW com.example.crudangularjs.response.ProductDetailResponse" +
             "(p.idProduct, p.name, p.price, p.quantity, b.name) " +
-            "FROM Product p JOIN p.listBrand b WHERE b.name = :brandName")
-    List<ProductDetailResponse> findProductByBrandName(@Param("brandName") String brandName);
+            "FROM Product p JOIN p.listBrand b WHERE b.idBrand = :idBrand")
+    List<ProductDetailResponse> findProductByBrandName(@Param("idBrand") Long idBrand);
+
+    @Query("SELECT NEW com.example.crudangularjs.response.ProductDetailResponse" +
+            "(p.idProduct, p.name, p.price, p.quantity, b.name) " +
+            "FROM Product p JOIN p.listBrand b WHERE p.idProduct = :idProduct")
+    ProductDetailResponse findProductById(Long idProduct);
 
 
 
